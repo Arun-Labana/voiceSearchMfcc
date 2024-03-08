@@ -76,6 +76,12 @@ def find_similar(query_audio_path, database_features, top_n=5):
         if mfcc.shape[1] >= query_mfcc.shape[1]:
             distance = find_best_match(query_mfcc, mfcc,path)
             distances[path] = distance
+        else : 
+            segment_query = query_mfcc[: ,0:mfcc.shape[1]]
+            distance_arr = minkowski_distance(segment_query, mfcc)
+            mean = np.mean(distance_arr)
+            distance = sum(value for value in distance_arr if value <= 3*mean)
+            distances[path] = distance
     sorted_distances = sorted(distances.items(), key=lambda item: item[1])
     return sorted_distances[:top_n]
 
